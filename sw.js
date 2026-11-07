@@ -1,9 +1,9 @@
-/* QWACK 0.1.1 — offline scoped to this PWA only. */
-const CACHE = 'qwack-pwa-v0.1.1';
+/* QWACK 0.1.3 — offline scoped to this PWA only. */
+const CACHE = 'qwack-pwa-v0.1.3';
 const CORE = [
   './', './index.html', './manifest.webmanifest',
-  './assets/icon.svg', './assets/icon-192.png', './assets/icon-512.png',
-  './assets/maskable-512.png', './assets/apple-touch-icon.png'
+  './icon.svg', './icon-192.png', './icon-512.png',
+  './maskable-512.png', './apple-touch-icon.png'
 ];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));
