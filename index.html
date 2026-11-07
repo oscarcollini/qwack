@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#203B53">
+<meta name="description" content="QWACK — cifrario Playfair 5×5 con quattro comandi.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
+<link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="QWACK">
+<title>QWACK — playfair+</title>
+<style>
+:root{color-scheme:light;--navy:#203B53;--navy2:#10283D;--yellow:#F1C54C;--eggshell:#FAF8F0;--paper:#FFFFFF;--ice:#EAF1F3;--ink:#213A50;--muted:#56707B;--line:#C7D5D9;--coral:#DD744B;--mint:#A4D9BB;--bad:#AD303F;--orange:#F2B351}
+*{box-sizing:border-box}html{font-family:system-ui,-apple-system,Segoe UI,sans-serif;-webkit-text-size-adjust:100%;background:var(--eggshell);color:var(--ink)}body{margin:0}button,input,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--coral);outline-offset:3px}button:disabled{opacity:.55;cursor:default}
+header{background:var(--navy);color:#FFF7D9;border-bottom:5px solid var(--yellow)}.headerin{max-width:970px;margin:auto;display:flex;align-items:center;gap:17px;padding:17px 17px}.logo{width:72px;height:72px;flex:none}.brand{font-weight:900;font-size:clamp(2.15rem,6.5vw,3.5rem);letter-spacing:-.075em;line-height:1}.brand .w{color:var(--yellow)}.tagline{font-size:.82rem;color:#C9D9DA;margin:6px 0 0}
+main{max-width:970px;margin:0 auto;padding:16px 12px 26px;display:grid;gap:11px}.panel{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:17px;box-shadow:0 5px 16px #203B530C}.panel h2,.panel summary{font-size:1.06rem;font-weight:820;margin:0 0 13px}.panel h3{font-size:.9rem;margin:0 0 8px}.hint{color:var(--muted);font-size:.81rem;line-height:1.48;margin:7px 0}.label{display:block;font-size:.86rem;font-weight:750;margin-bottom:7px}input:not([type=checkbox]),textarea{border:1.6px solid #97B0B8;color:var(--ink);background:#FFF;border-radius:9px;padding:11px 12px;width:100%;font-family:ui-monospace,Consolas,monospace;font-size:1rem}input:not([type=checkbox]){font-weight:800;letter-spacing:.055em;max-width:430px}textarea{min-height:130px;line-height:1.52;resize:vertical;white-space:pre-wrap}.status{font-size:.8rem;margin:8px 0 0;color:var(--muted)}.mono,code,.output,.stage pre,.candidate-line,.pairbutton,.cell,.command,.key-chip{font-family:ui-monospace,Consolas,monospace}
+.manual-choice{display:flex;align-items:center;gap:8px;font-size:.81rem;color:var(--muted);margin:-1px 0 12px;width:max-content;cursor:pointer}.manual-choice input{width:17px;height:17px;accent-color:var(--navy);margin:0}.manual-choice[hidden]{display:none}.modebar{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--navy);border-radius:10px;overflow:hidden;margin-bottom:12px}.modebar button{border:0;padding:11px 9px;background:#F3F5EF;color:var(--ink);font-weight:780}.modebar button[aria-pressed=true]{background:var(--navy);color:white}.composemode{display:flex;gap:8px;margin:6px 0 15px}.composemode button{padding:7px 13px;border-radius:30px;border:1px solid var(--line);background:var(--ice);font-size:.84rem;font-weight:770;color:var(--ink)}.composemode button[aria-pressed=true]{background:var(--yellow);border-color:#CCA632}.text-caption{min-height:1.4em}.row{display:flex;gap:9px;align-items:center;justify-content:space-between;flex-wrap:wrap}.action{border:0;background:var(--yellow);border-radius:8px;padding:9px 14px;color:#192E40;font-weight:780}.action.secondary{background:var(--ice)}.output{min-height:67px;background:var(--navy2);color:#FFF9DC;border-radius:10px;padding:13px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6;margin:7px 0 0}.err{border-left:4px solid var(--bad);padding:10px 12px;color:#7C1422;background:#FFF0EE;border-radius:6px;font-size:.84rem;white-space:pre-wrap;margin:11px 0 0}.err[hidden],.padpanel[hidden],.composemode[hidden]{display:none}
+.commands{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0}.command{border:1px solid #839BA6;border-radius:10px;background:#F0F5F5;color:var(--navy2);padding:10px 4px;display:grid;gap:5px;min-width:0;text-align:center}.command b{font-size:1.18rem}.command small{font-family:system-ui,sans-serif;font-size:.76rem;line-height:1.25;color:#3F5A67;font-weight:650}.command:active{background:var(--yellow)}.command .mono{font:inherit}
+.tables{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}.tabletitle{margin:0 0 6px;font-weight:800;font-size:.85rem}.matrix{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;background:var(--navy2);padding:5px;border-radius:10px;width:100%;max-width:380px}.cell{min-width:0;aspect-ratio:1;display:grid;place-items:center;border:0;border-radius:4px;background:#F6F3E7;color:#263C4C;font-size:clamp(.72rem,2.5vw,1rem);font-weight:820;padding:0}.cell.ij{font-size:clamp(.59rem,2.05vw,.82rem)}button.cell:hover{background:#F5E1A4}button.cell:active{transform:scale(.96)}.tablefoot{font-size:.74rem;color:var(--muted);line-height:1.4;margin:6px 0 0}.bottombar{font-size:.77rem;color:var(--muted);margin:10px 0 0}
+.details{padding-top:4px}.details>summary{display:list-item;cursor:pointer;padding:12px 4px;margin:0;font-weight:820;font-size:1.08rem}.details>summary::marker{color:var(--coral)}.details[open]>summary{margin-bottom:9px}.step h3{font-size:.82rem;margin:14px 0 4px}.step pre{font-size:.84rem;background:var(--ice);padding:9px 10px;border-radius:8px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.45;margin:0}.pairbar{display:flex;gap:5px;flex-wrap:wrap;max-height:125px;overflow:auto;padding:6px 0}.pairbutton{border:1px solid #ABBDC2;color:var(--navy);background:white;font-size:.81rem;padding:7px 8px;border-radius:6px}.pairbutton[aria-pressed=true]{color:white;background:var(--navy)}.diagram{display:flex;gap:18px;flex-wrap:wrap;margin-top:9px}.diagram .matrix{width:230px;flex:0 0 230px}.diagram .cell{font-size:.85rem}.diagram .cell.path{box-shadow:inset 0 0 0 2px #86A4AE}.diagram .cell.src{background:var(--orange);box-shadow:inset 0 0 0 2px #9D6720}.diagram .cell.dst{background:var(--mint);box-shadow:inset 0 0 0 2px #4D8F66}.diagram .cell.both{background:linear-gradient(135deg,var(--orange) 0 49%,var(--mint) 51%)}.diagramtext{flex:1 1 175px;min-width:175px;font-size:.86rem;line-height:1.5}.legend{font-size:.78rem;margin-top:9px}.dot{width:12px;height:12px;display:inline-block;vertical-align:middle;border-radius:2px;margin-right:5px}.dot.a{background:var(--orange)}.dot.b{background:var(--mint)}.padpanel{margin:12px 0;padding:11px;background:#FFF9EE;border:1px dashed #DAA886;border-radius:8px}.candidate-line{word-break:break-all;line-height:2;font-size:.96rem}.candidate{border:0;border-radius:3px;padding:1px 2px;color:#A22C39;background:#FFE1DC;font:inherit;font-weight:800}.candidate.kept{outline:2px solid #BA6C6F}.candidate.dropped{text-decoration:line-through}.helptext{font-size:.87rem;line-height:1.58}.helptext p{margin:9px 0}.helptext code{font-size:.87em;background:var(--ice);padding:2px 4px;border-radius:3px}.helptext ul{padding-left:20px}.helptext li{margin:5px 0}.meta{font-size:.78rem;color:var(--muted)}footer{font-size:.76rem;color:var(--muted);text-align:center;padding:0 14px 26px}footer a{color:var(--ink)}
+@media(min-width:740px){main{grid-template-columns:1fr 1fr}.wide{grid-column:1/-1}.tables{gap:24px}}@media(max-width:410px){main{padding:11px 8px}.panel{padding:13px}.tables{gap:8px}.matrix{padding:4px;gap:2px}.cell{font-size:.73rem}.cell.ij{font-size:.6rem}.commands{gap:5px}.command b{font-size:1rem}.command small{font-size:.62rem}.headerin{padding:14px 12px}.logo{height:58px;width:58px}.tagline{font-size:.73rem}.diagram .matrix{flex-basis:210px;width:210px}}
+</style>
+</head>
+<body>
+<header><div class="headerin">
+<svg class="logo" viewBox="0 0 80 80" role="img" aria-label="Papera gialla, icona QWACK"><rect width="80" height="80" rx="18" fill="#F1C54C"/><path d="M11 60 Q39 70 70 59" stroke="#2B6F89" stroke-width="4" stroke-linecap="round" fill="none"/><ellipse cx="40" cy="48" rx="26" ry="18" fill="#FFF6D5"/><circle cx="51" cy="29" r="17" fill="#FFF6D5"/><path d="M64 30 Q75 29 72 35 Q68 41 57 37 Z" fill="#DD744B"/><circle cx="57" cy="26" r="3.2" fill="#203B53"/><path d="M28 46 Q40 40 49 48 Q37 60 28 46 Z" fill="#E6B638"/><path d="M22 53 L10 45 L15 58 Z" fill="#FFF6D5"/></svg>
+<div><div class="brand">Q<span class="w">W</span>ACK</div><p class="tagline">playfair+</p></div>
+</div></header>
+<main>
+<section class="panel wide" id="key-panel"><h2>Chiave</h2><input id="key" value="CHIAVE" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Parola chiave"><p class="status" id="key-status"></p></section>
+<section class="panel wide" id="tables"><div class="tables"><div><p class="tabletitle">1 · Lettere</p><div id="main-matrix" class="matrix"></div></div><div><p class="tabletitle">2 · Shift</p><div id="shift-matrix" class="matrix"></div></div></div></section>
+<section class="panel wide" id="commands-panel"><div class="commands" id="commands"><button class="command" data-code="KQ" type="button" title="Una lettera maiuscola"><b>KQ</b><small>maiuscola</small></button><button class="command" data-code="KW" type="button" title="Blocco maiuscole"><b>KW</b><small>caps lock</small></button><button class="command" data-code="QK" type="button" title="Un simbolo del quadro Shift"><b>QK</b><small>shift</small></button><button class="command" data-code="QW" type="button" title="Blocco di cifre"><b>QW</b><small>bloc num</small></button></div></section>
+<section class="panel wide" id="compose"><h2>Cifra / Decifra</h2><div class="modebar"><button id="encrypt-tab" aria-pressed="true">Cifra</button><button id="decrypt-tab" aria-pressed="false">Decifra</button></div><label class="manual-choice" id="manual-choice"><input id="manual-toggle" type="checkbox"> Codici manuali</label><label class="label" for="source" id="source-label">Messaggio in chiaro</label><textarea id="source" placeholder="Scrivi il messaggio…" spellcheck="false"></textarea><p class="err" id="error" hidden></p><div class="row" style="margin-top:15px"><label class="label" for="result" style="margin:0" id="result-label">Messaggio cifrato</label><button class="action secondary" id="copy-result">Copia</button></div><pre id="result" class="output" aria-live="polite"></pre><div class="padpanel" id="padpanel" hidden><p class="hint" style="margin-top:0">Le X/Z rosse potrebbero essere riempitivi Playfair. Toccane una per conservarla o eliminarla.</p><div class="candidate-line" id="padline"></div></div></section>
+<details class="panel wide details" id="steps"><summary>Passaggi · come si forma il cifrato</summary><div id="step-content"></div><div id="pair-explorer" hidden><h3 style="margin-top:18px">Seleziona un digramma</h3><div class="pairbar" id="pair-list"></div><div class="diagram"><div class="matrix" id="demo-matrix"></div><div class="diagramtext"><p id="pair-desc"></p><p class="legend"><span class="dot a"></span>Partenza &nbsp; <span class="dot b"></span>Risultato</p></div></div></div></details>
+<details class="panel wide details" id="rules"><summary>Regole Playfair</summary><div class="helptext"><p><strong>Accento grave:</strong> <code>ˋ</code> segue la vocale. Per esempio <code>eˋ</code> → <code>è</code> (nel codice manuale: <code>EQKN</code>).</p><p><strong>Manine:</strong> <code>☛</code> e <code>☜</code> racchiudono una descrizione, per esempio <code>☛emoji della faccina che ride☜</code>.</p><p><strong>Playfair:</strong> costruisci il quadrato con la chiave e completa con le lettere mancanti. Dividi il testo preparato in coppie, separando le lettere uguali con X (oppure Z) e completando l'ultima coppia, se necessario.</p><ul><li>Stessa riga: a destra per cifrare, a sinistra per decifrare.</li><li>Stessa colonna: sotto per cifrare, sopra per decifrare.</li><li>Rettangolo: usa gli angoli opposti sulla stessa riga.</li></ul></div></details>
+</main>
+<footer>Oscar Collini fecit · <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.it" rel="license" target="_blank">CC BY-SA 4.0</a> · QWACK v0.1.1</footer>
+<script id="qwack-core">
+/* QWACK 0.1.1 — motore Playfair sperimentale, senza dipendenze. */
+(function(global){
+'use strict';
+const ABC='ABCDEFGHIKLMNOPQRSTUVWXYZ';
+const SECOND=['1','2','3','4','5','6','7','8','9','0',' ','\n','ˋ','☛','☜','.',':','?','(','-',',',';','!',')',"'"];
+const PRINT=['1','2','3','4','5','6','7','8','9','0','␣','↵','ˋ','☛','☜','.',':','?','(','-',',',';','!',')',"'"];
+const S2L=new Map([...ABC].map((c,i)=>[SECOND[i],c]));
+const L2S=new Map([...ABC].map((c,i)=>[c,SECOND[i]]));
+const DIGITS='ABCDEFGHIK';
+const PREFIXES=['QK','KQ','QW','KW'];
+const GRAVE={a:'à',e:'è',i:'ì',o:'ò',u:'ù',A:'À',E:'È',I:'Ì',O:'Ò',U:'Ù'};
+const INVERSE_GRAVE=new Map(Object.entries(GRAVE).map(([k,v])=>[v,k]));
+const cLetter=x=>x==='J'?'I':x;
+const canon=x=>cLetter(x.toUpperCase());
+if(ABC.length!==25||SECOND.length!==25||new Set([...ABC]).size!==25||new Set(SECOND).size!==25)throw Error('Errore matrici QWACK');
+function matrix(key='CHIAVE'){
+  const s=String(key).toUpperCase().replace(/\s/g,'');
+  if(!s || !/^[A-Z]+$/.test(s))throw Error('La chiave deve contenere solo lettere A–Z.');
+  const letters=[];const used=new Set();
+  for(const ch of [...s,...ABC]){const v=cLetter(ch);if(!used.has(v)){used.add(v);letters.push(v)}}
+  const positions=new Map(letters.map((ch,i)=>[ch,{row:(i/5)|0,col:i%5,index:i}]));
+  return {keyword:s,letters,positions};
+}
+function playfairPair(pair,m,dir=1){
+  const a=m.positions.get(pair[0]),b=m.positions.get(pair[1]);
+  if(!a||!b)throw Error('Digramma non valido: '+pair);
+  const get=(r,c)=>m.letters[((r+5)%5)*5+((c+5)%5)];
+  if(a.row===b.row)return get(a.row,a.col+dir)+get(b.row,b.col+dir);
+  if(a.col===b.col)return get(a.row+dir,a.col)+get(b.row+dir,b.col);
+  return get(a.row,b.col)+get(b.row,a.col);
+}
+function addPads(prepared){
+  let full='',pairs=[],pads=[];let i=0;
+  while(i<prepared.length){const a=prepared[i],b=prepared[i+1];
+    if(!b||a===b){const fill=a==='X'?'Z':'X';pairs.push(a+fill);full+=a+fill;pads.push(full.length-1);i++}
+    else {pairs.push(a+b);full+=a+b;i+=2}
+  }
+  return {full,pairs,pads};
+}
+function decodePrepared(str){
+  let out='',i=0,mode='normal',inside=false;
+  function ch(x){return cLetter(x)}
+  while(i<str.length){
+    const cmd=str.slice(i,i+2);
+    if(mode==='normal'){
+      if(cmd==='QK'){
+        if(i+2>=str.length)throw Error('QK incompleto: manca la lettera del quadro 2.');
+        const v=L2S.get(ch(str[i+2]));if(v===undefined)throw Error('Codice QK non valido.');
+        if(v==='ˋ'){
+          const prev=out.slice(-1);if(!GRAVE[prev])throw Error('Accento ˋ senza una vocale precedente.');
+          out=out.slice(0,-1)+GRAVE[prev];
+        }else if(v==='☛'){if(inside)throw Error('Descrizioni ☛ annidate.');out+=v;inside=true}
+        else if(v==='☜'){if(!inside)throw Error('☜ senza ☛.');out+=v;inside=false}
+        else out+=v;
+        i+=3;continue;
+      }
+      if(cmd==='KQ'){
+        if(i+2>=str.length)throw Error('KQ incompleto: manca la lettera da rendere maiuscola.');
+        out+=ch(str[i+2]);i+=3;continue;
+      }
+      if(cmd==='KW'){mode='caps';i+=2;continue}
+      if(cmd==='QW'){mode='digits';i+=2;continue}
+      out+=ch(str[i]).toLowerCase();i++;continue;
+    }
+    if(mode==='caps'){
+      if(cmd==='KW'){mode='normal';i+=2;continue}
+      out+=ch(str[i]);i++;continue;
+    }
+    if(mode==='digits'){
+      if(cmd==='QW'){mode='normal';i+=2;continue}
+      const idx=DIGITS.indexOf(ch(str[i]));if(idx<0)throw Error('La lettera '+str[i]+' non rappresenta una cifra nel blocco QW.');
+      out+=SECOND[idx];i++;continue;
+    }
+  }
+  if(mode!=='normal')throw Error('Blocco '+(mode==='caps'?'KW':'QW')+' non chiuso.');
+  if(inside)throw Error('Descrizione ☛ non chiusa.');
+  return out;
+}
+function encodePlain(raw){
+  const s=String(raw||'').normalize('NFC').replace(/\r\n?/g,'\n').replace(/([aeiouAEIOU])ˋ/g,(_,v)=>GRAVE[v]);
+  let buf='',i=0,inside=false;
+  // Definiamo un blocco se ci sono almeno 3 cifre o 3 lettere maiuscole consecutive.
+  const chrType=(c)=>/[0-9]/.test(c)?'digit':/[A-Z]/.test(c)?'upper':null;
+  while(i<s.length){
+    const c=s[i];
+    if(c==='☛'){if(inside)throw Error('Non si possono annidare le manine.');inside=true;buf+='QKO';i++;continue}
+    if(c==='☜'){if(!inside)throw Error('☜ senza ☛.');inside=false;buf+='QKP';i++;continue}
+    if(INVERSE_GRAVE.has(c)){
+      const base=INVERSE_GRAVE.get(c);buf+=(base===base.toUpperCase()?'KQ':'')+canon(base)+'QKN';i++;continue;
+    }
+    const t=chrType(c);
+    if(t){let j=i;while(j<s.length && chrType(s[j])===t)j++;
+      const count=j-i;
+      if(count>=3 && !(t==='upper' && s.slice(i,j).includes('KW'))){
+        const body=[...s.slice(i,j)].map(a=>t==='digit'?S2L.get(a):canon(a)).join('');
+        buf+=(t==='digit'?'QW':'KW')+body+(t==='digit'?'QW':'KW');i=j;continue;
+      }
+    }
+    if(/[a-zA-Z]/.test(c))buf+=(c===c.toUpperCase()?'KQ':'')+canon(c);
+    else if(S2L.has(c))buf+='QK'+S2L.get(c);
+    else throw Error('Carattere non previsto: '+JSON.stringify(c)+'. Scrivine una descrizione tra ☛ e ☜.');
+    i++;
+  }
+  if(inside)throw Error('Manca la manina finale ☜.');
+  // La grammatica deve ricostruire esattamente il messaggio normalizzato, altrimenti non cifriamo dati corrotti.
+  const interpreted=decodePrepared(buf);
+  const norm=s.replace(/[Jj]/g,c=>c==='J'?'I':'i');
+  if(interpreted!==norm)throw Error('Collisione fra un comando e il testo. Una lettera Q, K o W è adiacente a un codice riservato. Riscrivi quel passaggio con una descrizione tra ☛ e ☜.');
+  return {prepared:buf,normalized:norm};
+}
+function encryptPrepared(input,m){
+  const raw=String(input||'').toUpperCase().replace(/\s+/g,'');
+  if(!/^[ABCDEFGHIKLMNOPQRSTUVWXYZ]*$/.test(raw))throw Error('La sequenza preparata deve contenere soltanto le 25 lettere della matrice.');
+  const normalized=decodePrepared(raw);const r=addPads(raw);
+  const cipher=r.pairs.map(x=>playfairPair(x,m,1)).join('');
+  return {...r,prepared:raw,normalized,cipher,grouped:cipher.replace(/.{1,5}/g,'$& ').trim(),m};
+}
+function encrypt(text,m){const p=encodePlain(text);return {...encryptPrepared(p.prepared,m),original:p.normalized};}
+function decryptRaw(text,m){
+  const clean=String(text||'').toUpperCase().replace(/\s+/g,'').replace(/J/g,'I');
+  if(!/^[ABCDEFGHIKLMNOPQRSTUVWXYZ]*$/.test(clean))throw Error('Il cifrato contiene caratteri non validi.');
+  if(clean.length%2)throw Error('Il cifrato deve contenere un numero pari di lettere.');
+  const pairs=[];let raw='';for(let i=0;i<clean.length;i+=2){const cipher=clean.slice(i,i+2),plain=playfairPair(cipher,m,-1);pairs.push({cipher,plain});raw+=plain;}
+  return {m,clean,raw,pairs};
+}
+function padCandidates(raw){const a=[];
+  for(let i=1;i<raw.length;i+=2){const c=raw[i],prev=raw[i-1];if(c!==(prev==='X'?'Z':'X'))continue;if(i===raw.length-1||raw[i+1]===prev)a.push(i)}
+  return a;
+}
+function decodeCipher(input,m,keep=[]){
+  const base=decryptRaw(input,m),candidates=padCandidates(base.raw),kept=new Set(keep);
+  const stripped=[...base.raw].filter((ch,i)=>!candidates.includes(i)||kept.has(i)).join('');
+  let text='',error='';try{text=decodePrepared(stripped)}catch(e){error=e.message}
+  return {...base,candidates,kept,stripped,text,error};
+}
+function smartKeep(base){
+  const c=padCandidates(base.raw);const check=keep=>{
+    const t=[...base.raw].filter((_,i)=>!c.includes(i)||keep.includes(i)).join('');
+    try{decodePrepared(t);return true}catch{return false}
+  };
+  if(check([]))return [];
+  for(const i of c)if(check([i]))return [i];
+  for(let i=0;i<c.length&&i<20;i++)for(let j=i+1;j<c.length&&j<20;j++)if(check([c[i],c[j]]))return [c[i],c[j]];
+  return [];
+}
+const QWACKCore={ABC,SECOND,PRINT,S2L,L2S,DIGITS,PREFIXES,GRAVE,INVERSE_GRAVE,matrix,playfairPair,addPads,decodePrepared,encodePlain,encryptPrepared,encrypt,decryptRaw,padCandidates,decodeCipher,smartKeep};
+global.QWACKCore=QWACKCore;
+if(typeof module!=='undefined'&&module.exports)module.exports=QWACKCore;
+})(typeof globalThis==='object'?globalThis:this);
+
+</script>
+<script>
+(function(){
+'use strict';
+const core=window.QWACKCore;const el=id=>document.getElementById(id);
+const state={operation:'encrypt',entry:'auto',drafts:{auto:'',manual:null,decrypt:''},selected:0,kept:null,caret:0,end:0,lastOut:'',current:null,pairs:[]};
+const source=el('source');
+function make(tag,cls,txt){const a=document.createElement(tag);if(cls)a.className=cls;if(txt!==undefined)a.textContent=txt;return a}
+function showError(s){el('error').textContent=s||'';el('error').hidden=!s}
+function keyMatrix(){try{return core.matrix(el('key').value)}catch(e){el('key-status').textContent=e.message;throw e}}
+function rememberCursor(){if(document.activeElement===source){state.caret=source.selectionStart;state.end=source.selectionEnd}}
+function saveDraft(){state.drafts[state.operation==='decrypt'?'decrypt':state.entry]=source.value}
+function placeText(str){
+  if(state.operation!=='encrypt')return;
+  const start=Math.min(state.caret,source.value.length),end=Math.min(state.end,source.value.length);
+  source.setRangeText(str,start,end,'end');state.caret=start+str.length;state.end=state.caret;
+  saveDraft();state.selected=0;state.kept=null;refresh();
+}
+function switchEntry(entry,fromCommand=false){
+  if(state.operation!=='encrypt'||state.entry===entry)return;
+  saveDraft();
+  if(entry==='manual' && state.drafts.manual===null){
+    try{state.drafts.manual=core.encodePlain(state.drafts.auto||'').prepared}catch{state.drafts.manual=''}
+  }
+  state.entry=entry;source.value=state.drafts[entry]||'';state.caret=source.value.length;state.end=state.caret;
+  state.selected=0;state.kept=null;refresh();
+}
+function setOperation(op){
+  if(state.operation===op)return;
+  saveDraft();state.operation=op;
+  source.value=state.drafts[op==='decrypt'?'decrypt':state.entry]||'';
+  state.caret=source.value.length;state.end=state.caret;state.kept=null;state.selected=0;refresh();
+}
+function useCommand(code){
+  if(state.operation!=='encrypt')return;
+  if(state.entry!=='manual')switchEntry('manual',true);
+  placeText(code);
+}
+function inDigitBlock(before){
+  const s=before.toUpperCase().replace(/\s/g,'');let mode='normal',i=0;
+  while(i<s.length){
+    const code=s.slice(i,i+2);
+    if(mode==='digits'){if(code==='QW'){mode='normal';i+=2}else i++;continue}
+    if(mode==='caps'){if(code==='KW'){mode='normal';i+=2}else i++;continue}
+    if(code==='QW'){mode='digits';i+=2}else if(code==='KW'){mode='caps';i+=2}
+    else if(code==='QK'||code==='KQ')i+=3;else i++;
+  }
+  return mode==='digits';
+}
+function putFromGrid(which,letter){
+  if(state.operation!=='encrypt')return;
+  const idx=core.ABC.indexOf(letter);
+  if(state.entry==='auto'){
+    if(which==='main'){placeText(letter.toLowerCase());return}
+    const val=core.SECOND[idx];
+    if(val==='ˋ'){
+      const prev=source.value.slice(0,state.caret).slice(-1);
+      if(!core.GRAVE[prev]){showError('Il segno ˋ si applica alla vocale immediatamente precedente.');return}
+      const before=source.value.slice(0,state.caret-1),after=source.value.slice(state.end);
+      source.value=before+core.GRAVE[prev]+after;state.caret=before.length+1;state.end=state.caret;saveDraft();refresh();return;
+    }
+    placeText(val);return;
+  }
+  if(which==='main'){placeText(letter);return}
+  const before=source.value.slice(0,state.caret).replace(/\s/g,'').toUpperCase();
+  const val=core.SECOND[idx];
+  if(before.endsWith('QK')||(inDigitBlock(before)&&/[0-9]/.test(val)))placeText(letter);
+  else placeText('QK'+letter);
+}
+function tableCell(label,which,letter){
+  const active=state.operation==='encrypt';const a=make(active?'button':'div','cell'+(label==='I/J'?' ij':''),label);
+  if(active){a.type='button';a.title=(which==='main'?'Inserisci ':'Inserisci Shift ')+label;
+    a.addEventListener('click',()=>putFromGrid(which,letter));}
+  return a;
+}
+function drawTables(m){
+  const a=el('main-matrix'),b=el('shift-matrix');a.replaceChildren();b.replaceChildren();
+  if(!m)return;
+  for(const letter of m.letters){
+    a.append(tableCell(letter==='I'?'I/J':letter,'main',letter));
+    b.append(tableCell(core.PRINT[core.ABC.indexOf(letter)],'shift',letter));
+  }
+}
+function stages(lines){const target=el('step-content');target.replaceChildren();
+  for(const [title,val] of lines){const stage=make('div','step');stage.append(make('h3','',title),make('pre','',val||'—'));target.append(stage)}
+}
+function buildPairs(items,m){
+  state.pairs=items;const list=el('pair-list');list.replaceChildren();
+  el('pair-explorer').hidden=!items.length;
+  if(!items.length)return;
+  state.selected=Math.max(0,Math.min(state.selected,items.length-1));
+  for(let i=0;i<items.length;i++){
+    const p=items[i],btn=make('button','pairbutton',p.input+' → '+p.output);btn.type='button';btn.setAttribute('aria-pressed',String(i===state.selected));
+    btn.addEventListener('click',()=>{state.selected=i;drawDiagram(m);for(const [j,x] of [...list.children].entries())x.setAttribute('aria-pressed',String(j===i))});list.append(btn);
+  }
+  drawDiagram(m);
+}
+function drawDiagram(m){
+  if(!m||!state.pairs.length)return;
+  const pair=state.pairs[state.selected],from=pair.input,to=pair.output;
+  const A=m.positions.get(from[0]),B=m.positions.get(from[1]);
+  const start=new Set([A.index,B.index]);const end=new Set([...to].map(ch=>m.positions.get(ch).index));
+  const path=new Set();let name,why;
+  if(A.row===B.row){for(let c=0;c<5;c++)path.add(A.row*5+c);name='Stessa riga';why=state.operation==='encrypt'?'Una casella a destra.':'Una casella a sinistra.'}
+  else if(A.col===B.col){for(let r=0;r<5;r++)path.add(r*5+A.col);name='Stessa colonna';why=state.operation==='encrypt'?'Una casella sotto.':'Una casella sopra.'}
+  else{for(const s of start)path.add(s);for(const s of end)path.add(s);name='Rettangolo';why='Si prende l’angolo che sta sulla stessa riga, nell’altra colonna.'}
+  const grid=el('demo-matrix');grid.replaceChildren();
+  for(let i=0;i<25;i++){
+    const ch=m.letters[i];const css=['cell'];if(path.has(i))css.push('path');
+    if(start.has(i)&&end.has(i))css.push('both');else if(start.has(i))css.push('src');else if(end.has(i))css.push('dst');
+    if(ch==='I')css.push('ij');grid.append(make('div',css.join(' '),ch==='I'?'I/J':ch));
+  }
+  el('pair-desc').textContent=`${name}: ${why}   ${from} → ${to}`;
+}
+function padChoices(decoded){const panel=el('padpanel'),line=el('padline');line.replaceChildren();panel.hidden=!decoded.candidates.length;
+  if(!decoded.candidates.length)return;
+  const candidates=new Set(decoded.candidates);
+  for(let i=0;i<decoded.raw.length;i++){
+    const ch=decoded.raw[i];if(candidates.has(i)){
+      const kept=state.kept?.has(i)??false;const bt=make('button','candidate '+(kept?'kept':'dropped'),ch);bt.title=kept?'Conservata — tocca per scartare':'Scartata — tocca per conservare';
+      bt.addEventListener('click',()=>{if(kept)state.kept.delete(i);else state.kept.add(i);refresh()});line.append(bt);
+    }else line.append(document.createTextNode(ch));
+  }
+}
+function refresh(){
+  el('encrypt-tab').setAttribute('aria-pressed',String(state.operation==='encrypt'));
+  el('decrypt-tab').setAttribute('aria-pressed',String(state.operation==='decrypt'));
+  el('manual-choice').hidden=state.operation==='decrypt';
+  el('manual-toggle').checked=state.entry==='manual';
+  el('source-label').textContent=state.operation==='decrypt'?'Messaggio cifrato':state.entry==='manual'?'Sequenza preparata (lettere e comandi)':'Messaggio in chiaro';
+  el('result-label').textContent=state.operation==='decrypt'?'Messaggio decifrato':'Messaggio cifrato';
+  for(const bt of el('commands').querySelectorAll('button'))bt.disabled=state.operation==='decrypt';
+  el('key-status').textContent='';let m=null;
+  try{m=keyMatrix()}catch(e){showError(e.message);drawTables(null);el('result').textContent='';stages([]);el('pair-explorer').hidden=true;return}
+  drawTables(m);
+  try{
+    const v=source.value;
+    if(state.operation==='encrypt'){
+      const data=state.entry==='manual'?core.encryptPrepared(v,m):core.encrypt(v,m);
+      state.current=data;state.lastOut=data.grouped;
+      el('result').textContent=data.grouped;el('padpanel').hidden=true;showError('');
+      stages([
+        ['Sequenza prima del Playfair',data.prepared],
+        ['Digrammi con eventuali X/Z',data.pairs.join('  ')],
+        ['Cifrato',data.grouped]
+      ]);
+      buildPairs(data.pairs.map((p,i)=>({input:p,output:core.playfairPair(p,m,1)})),m);
+    }else{
+      const base=core.decryptRaw(v,m);
+      if(state.kept===null)state.kept=new Set(core.smartKeep(base));
+      const d=core.decodeCipher(v,m,[...state.kept]);state.current=d;state.lastOut=d.error?'':d.text;
+      el('result').textContent=d.error?'—':d.text;showError(d.error);padChoices(d);
+      stages([
+        ['Digrammi decifrati',d.pairs.map(p=>p.plain).join('  ')],
+        ['Sequenza prima di leggere i comandi',d.stripped],
+        ['Messaggio ricostruito',d.error?'Controlla i riempitivi evidenziati.':d.text]
+      ]);
+      buildPairs(d.pairs.map(p=>({input:p.cipher,output:p.plain})),m);
+    }
+  }catch(e){state.current=null;state.lastOut='';el('result').textContent='—';el('padpanel').hidden=true;showError(e.message);stages([]);el('pair-explorer').hidden=true;state.pairs=[]}
+}
+source.addEventListener('input',()=>{saveDraft();rememberCursor();state.selected=0;state.kept=null;refresh()});
+for(const event of ['click','keyup','select','focus','touchend'])source.addEventListener(event,rememberCursor);
+el('key').addEventListener('input',()=>{state.kept=null;refresh()});
+el('encrypt-tab').addEventListener('click',()=>setOperation('encrypt'));
+el('decrypt-tab').addEventListener('click',()=>setOperation('decrypt'));
+el('manual-toggle').addEventListener('change',e=>switchEntry(e.target.checked?'manual':'auto'));
+for(const bt of el('commands').querySelectorAll('button'))bt.addEventListener('click',()=>useCommand(bt.dataset.code));
+el('steps').addEventListener('toggle',()=>{if(el('steps').open&&state.current){try{drawDiagram(keyMatrix())}catch{}}});
+el('copy-result').addEventListener('click',async()=>{if(!state.lastOut)return;try{await navigator.clipboard.writeText(state.lastOut);el('copy-result').textContent='Copiato';setTimeout(()=>el('copy-result').textContent='Copia',1000)}catch{const ta=make('textarea');ta.value=state.lastOut;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove()}});
+state.caret=0;state.end=0;refresh();
+})();
+
+</script>
+<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', {scope:'./'}).catch(() => {});
+  });
+}
+</script>
+</body></html>
