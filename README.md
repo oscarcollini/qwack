@@ -1,14 +1,11 @@
-# QWACK 0.1.3 — PWA senza sottocartelle
+# QWACK 0.1.4 — icone senza bordi
 
-Tutti i file sono nella radice del pacchetto; non occorre creare `assets`.
+Questa versione cambia soltanto le icone e il numero di versione. Cifratura, comandi, testi e interfaccia sono invariati.
 
-## Installazione su GitHub Pages
+Tutti i file sono nella radice, senza sottocartelle. Estrai lo ZIP e carica i file nel repository GitHub Pages `qwack`.
 
-1. Estrai `QWACK_PWA_0.1.3.zip`.
-2. Nel repository `qwack`, carica insieme **i file estratti**, senza caricare lo ZIP come tale.
-3. In Settings → Pages, pubblica la branch `main`, cartella `/ (root)`.
-4. Apri `https://oscarcollini.github.io/qwack/` per usare l'app.
+Manifest: ID `/qwack/`, scope `./` e start URL `./`.
 
-Il manifest mantiene `id: /qwack/`, separato da altri progetti.
+**Attenzione:** il problema di Chrome Android che segnala erroneamente PWA già installate nello stesso dominio `oscarcollini.github.io` non può essere risolto cambiando le icone. Per installare PWA indipendenti occorre una versione di Chrome corretta o un'origine web distinta (es. un diverso dominio/hosting).
 
-Modifiche rispetto alla 0.1.2: chiave inizialmente vuota con segnaposto grigio, lettere delle matrici più grandi, palette rivista. Motore cifrario invariato.
+Se QWACK è già presente sulla schermata Home come scorciatoia, la vecchia icona potrebbe restare in cache; elimina la *scorciatoia*, non i dati del sito, e aggiungila nuovamente.

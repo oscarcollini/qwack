@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#21464C">
 <meta name="description" content="QWACK — cifrario Playfair 5×5 con quattro comandi.">
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -37,9 +37,9 @@ main{max-width:970px;margin:0 auto;padding:16px 12px 26px;display:grid;gap:11px}
 <details class="panel wide details" id="steps"><summary>Passaggi · come si forma il cifrato</summary><div id="step-content"></div><div id="pair-explorer" hidden><h3 style="margin-top:18px">Seleziona un digramma</h3><div class="pairbar" id="pair-list"></div><div class="diagram"><div class="matrix" id="demo-matrix"></div><div class="diagramtext"><p id="pair-desc"></p><p class="legend"><span class="dot a"></span>Partenza &nbsp; <span class="dot b"></span>Risultato</p></div></div></div></details>
 <details class="panel wide details" id="rules"><summary>Regole Playfair</summary><div class="helptext"><p><strong>Accento grave:</strong> <code>ˋ</code> segue la vocale. Per esempio <code>eˋ</code> → <code>è</code> (nel codice manuale: <code>EQKN</code>).</p><p><strong>Manine:</strong> <code>☛</code> e <code>☜</code> racchiudono una descrizione, per esempio <code>☛emoji della faccina che ride☜</code>.</p><p><strong>Playfair:</strong> costruisci il quadrato con la chiave e completa con le lettere mancanti. Dividi il testo preparato in coppie, separando le lettere uguali con X (oppure Z) e completando l'ultima coppia, se necessario.</p><ul><li>Stessa riga: a destra per cifrare, a sinistra per decifrare.</li><li>Stessa colonna: sotto per cifrare, sopra per decifrare.</li><li>Rettangolo: usa gli angoli opposti sulla stessa riga.</li></ul></div></details>
 </main>
-<footer>Oscar Collini fecit · <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.it" rel="license" target="_blank">CC BY-SA 4.0</a> · QWACK v0.1.3</footer>
+<footer>Oscar Collini fecit · <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.it" rel="license" target="_blank">CC BY-SA 4.0</a> · QWACK v0.1.4</footer>
 <script id="qwack-core">
-/* QWACK 0.1.3 — motore Playfair sperimentale, senza dipendenze. */
+/* QWACK 0.1.4 — motore Playfair sperimentale, senza dipendenze. */
 (function(global){
 'use strict';
 const ABC='ABCDEFGHIKLMNOPQRSTUVWXYZ';
