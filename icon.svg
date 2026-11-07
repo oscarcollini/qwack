@@ -1,1 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><rect width="80" height="80" rx="18" fill="#F3C84D"/><path d="M11 60 Q39 70 70 59" stroke="#2A7A83" stroke-width="4" stroke-linecap="round" fill="none"/><ellipse cx="40" cy="48" rx="26" ry="18" fill="#FFF7DB"/><circle cx="51" cy="29" r="17" fill="#FFF7DB"/><path d="M64 30 Q75 29 72 35 Q68 41 57 37 Z" fill="#DA784B"/><circle cx="57" cy="26" r="3.2" fill="#21464C"/><path d="M28 46 Q40 40 49 48 Q37 60 28 46 Z" fill="#E6B748"/><path d="M22 53 L10 45 L15 58 Z" fill="#FFF7DB"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>QWACK — papera</title>
+  <rect width="512" height="512" fill="#FBC52D"/>
+  <path d="M110 379 C181 413 297 424 396 382" fill="none" stroke="#157D80" stroke-width="16" stroke-linecap="round"/>
+  <path d="M150 289 C183 262 216 248 251 261 C269 272 307 256 335 269 C370 283 381 326 361 356 C346 383 311 399 263 399 C203 398 153 379 125 337 C115 322 104 299 109 284 C115 264 127 278 150 289Z" fill="#FFF9E9"/>
+  <circle cx="298" cy="189" r="83" fill="#FFF9E9"/>
+  <path d="M181 318 C216 312 248 294 275 302 C296 307 308 319 315 333 C300 362 272 371 243 365 C213 359 191 342 181 318 Z" fill="#FBC52D"/>
+  <path d="M341 203 C357 192 383 189 403 201 C422 214 408 236 391 242 C375 249 353 239 339 227 C331 220 335 210 341 203Z" fill="#EB744A"/>
+  <circle cx="323" cy="185" r="11" fill="#085665"/>
+</svg>
